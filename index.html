@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ozone Watch — Know Before Hackers Do</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #08060d;
+    --bg-2: #120e1a;
+    --bg-3: #1c1428;
+    --cyan: #ff4d9d;
+    --cyan2: #ff8a3d;
+    --purple: #b16cff;
+    --red: #ff5c7a;
+    --green: #64f7c8;
+    --amber: #ffc15a;
+    --card: rgba(20, 15, 30, 0.72);
+    --card-solid: #16111f;
+    --border: rgba(255, 77, 157, 0.22);
+    --border-strong: rgba(255, 138, 61, 0.42);
+    --text: #f0e8f8;
+    --text-muted: rgba(228, 217, 242, 0.62);
+    --glow-pink: rgba(255, 77, 157, 0.35);
+    --glow-orange: rgba(255, 138, 61, 0.28);
+    --glow-purple: rgba(177, 108, 255, 0.3);
+    --shadow-soft: 0 18px 50px rgba(0, 0, 0, 0.35);
+    --shadow-glow: 0 0 40px rgba(255, 77, 157, 0.12);
+    --radius-lg: 28px;
+    --radius-md: 20px;
+    --radius-sm: 14px;
+    --mono: 'Share Tech Mono', monospace;
+    --display: 'Orbitron', sans-serif;
+    --body: 'Outfit', 'Rajdhani', sans-serif;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  ::selection {
+    background: rgba(255, 77, 157, 0.35);
+    color: #fff;
+  }
+
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--cyan), var(--purple));
+    border-radius: 999px;
+    border: 2px solid var(--bg);
+  }
+
+  body {
+    background:
+      radial-gradient(ellipse 80% 50% at 20% -10%, rgba(255, 77, 157, 0.14), transparent 55%),
+      radial-gradient(ellipse 60% 45% at 90% 10%, rgba(177, 108, 255, 0.16), transparent 50%),
+      radial-gradient(ellipse 70% 40% at 50% 100%, rgba(255, 138, 61, 0.1), transparent 55%),
+      linear-gradient(180deg, #0a0810 0%, var(--bg) 35%, #0b0912 100%);
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.55;
+    overflow-x: hidden;
+    cursor: none;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  @media (hover: none), (pointer: coarse) {
+    body, .btn-primary, .btn-ghost, .feature-card { cursor: auto; }
+    #cursor, #cursor-ring { display: none; }
+  }
+
+  #cursor {
+    position: fixed;
+    width: 10px; height: 10px;
+    background: var(--cyan2);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: width 0.2s, height 0.2s, background 0.2s;
+    box-shadow: 0 0 22px var(--cyan2), 0 0 36px rgba(255, 138, 61, 0.5);
+  }
+  #cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(255, 77, 157, 0.55);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.08s, width 0.2s, height 0.2s, border-color 0.2s;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.08) 2px,
+      rgba(0, 0, 0, 0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: -50%;
+    width: 200%; height: 200%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.25;
+    animation: grain 0.5s steps(1) infinite;
+  }
+  @keyframes grain {
+    0%,100%{transform:translate(0,0)} 10%{transform:translate(-2%,-3%)} 20%{transform:translate(3%,1%)}
+    30%{transform:translate(-1%,4%)} 40%{transform:translate(2%,-2%)} 50%{transform:translate(-3%,2%)}
+    60%{transform:translate(1%,-1%)} 70%{transform:translate(-2%,3%)} 80%{transform:translate(2%,1%)} 90%{transform:translate(-1%,-2%)}
+  }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 500;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 3rem;
+    background: rgba(8, 6, 13, 0.72);
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  }
+  nav::after {
+    content: '';
+    position: absolute;
+    left: 10%; right: 10%; bottom: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--glow-orange), transparent);
+    opacity: 0.65;
+  }
+  .nav-logo {
+    font-family: var(--display);
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: #ffd3f0;
+    letter-spacing: 4px;
+    text-shadow: 0 0 18px rgba(255, 77, 157, 0.55);
+    position: relative;
+  }
+  .nav-logo span { color: var(--cyan2); }
+  .nav-links { display: flex; gap: 2rem; }
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: 2px;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute; bottom: -4px; left: 0;
+    width: 0; height: 1px;
+    background: var(--cyan2);
+    transition: width 0.3s;
+  }
+  .nav-links a:hover { color: var(--cyan2); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-badge {
+    font-family: var(--mono); font-size: 0.65rem;
+    padding: 0.4rem 1rem;
+    border: 1px solid rgba(255, 92, 122, 0.55);
+    color: #ffd7df;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(255, 92, 122, 0.14), rgba(255, 77, 157, 0.06));
+    letter-spacing: 1.6px;
+    animation: blink 1.5s step-end infinite;
+    box-shadow: 0 0 20px rgba(255, 92, 122, 0.15), inset 0 0 12px rgba(255, 92, 122, 0.06);
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  #hero {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 8rem 3rem 4rem;
+  }
+  .grid-bg {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 77, 157, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 138, 61, 0.06) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridMove 22s linear infinite;
+  }
+  @keyframes gridMove { from{transform:translateY(0)} to{transform:translateY(60px)} }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    animation: float 8s ease-in-out infinite;
+  }
+  .orb-1 { width: 580px; height: 580px; background: rgba(177, 108, 255, 0.17); top: -200px; right: -100px; }
+  .orb-2 { width: 420px; height: 420px; background: rgba(255, 77, 157, 0.15); bottom: -100px; left: -100px; animation-delay: -4s; }
+  .orb-3 { width: 300px; height: 300px; background: rgba(255, 138, 61, 0.12); top: 50%; left: 40%; animation-delay: -2s; }
+  @keyframes float { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-30px) scale(1.05)} }
+
+  .hero-content {
+    position: relative; z-index: 2; max-width: 900px;
+    animation: heroFade 1.1s ease both;
+  }
+  @keyframes heroFade {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: none; }
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-family: var(--mono); font-size: 0.7rem;
+    color: #ffe2f3; letter-spacing: 3px;
+    border: 1px solid rgba(255, 77, 157, 0.45);
+    border-radius: 999px;
+    padding: 0.48rem 1.2rem;
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, rgba(255, 77, 157, 0.12), rgba(177, 108, 255, 0.06));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 24px rgba(0,0,0,0.2);
+    backdrop-filter: blur(8px);
+  }
+  .dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: pulse-dot 1s infinite; }
+  @keyframes pulse-dot {
+    0%,100%{box-shadow:0 0 0 0 rgba(100,247,200,0.7)}
+    50%{box-shadow:0 0 0 6px rgba(100,247,200,0)}
+  }
+
+  .hero-title {
+    font-family: var(--display);
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -2px;
+    margin-bottom: 1.5rem;
+  }
+  .hero-title .line1 { display: block; color: #ffd4ee; text-shadow: 0 0 30px rgba(255, 77, 157, 0.45), 0 0 70px rgba(177, 108, 255, 0.25); }
+  .hero-title .line2 {
+    display: block;
+    background: linear-gradient(90deg, #fff 0%, #ffd9f7 45%, #ffc9a4 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 24px rgba(255, 138, 61, 0.2));
+  }
+  .hero-title .line3 { display: block; color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.28); opacity: 0.9; }
+
+  .hero-sub {
+    font-size: 1.22rem; font-weight: 300; color: var(--text-muted);
+    max-width: 560px; line-height: 1.75; margin-bottom: 3rem;
+    letter-spacing: 0.3px;
+  }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  .btn-primary {
+    font-family: var(--mono); font-size: 0.8rem; letter-spacing: 2.4px;
+    padding: 1rem 2.3rem;
+    background: linear-gradient(135deg, var(--cyan) 0%, #d85cff 48%, var(--purple) 100%);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.12);
+    cursor: none;
+    position: relative; overflow: hidden;
+    border-radius: 999px;
+    font-weight: 700;
+    transition: transform 0.25s ease, box-shadow 0.35s ease, filter 0.25s ease;
+    box-shadow: 0 10px 30px rgba(255, 77, 157, 0.25), inset 0 1px 0 rgba(255,255,255,0.15);
+  }
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 40px rgba(255, 77, 157, 0.42), 0 0 50px rgba(177, 108, 255, 0.2);
+    filter: brightness(1.05);
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.28) 50%, transparent 60%);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+  }
+  .btn-primary:hover::after { transform: translateX(100%); }
+
+  .btn-ghost {
+    font-family: var(--mono); font-size: 0.8rem; letter-spacing: 2.4px;
+    padding: 1rem 2.3rem;
+    background: rgba(255, 77, 157, 0.03);
+    color: #ffd7ef;
+    border: 1px solid rgba(255, 77, 157, 0.4);
+    border-radius: 999px;
+    cursor: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(6px);
+  }
+  .btn-ghost:hover {
+    background: rgba(255, 77, 157, 0.1);
+    border-color: rgba(255, 138, 61, 0.7);
+    box-shadow: inset 0 0 24px rgba(255, 138, 61, 0.1), 0 8px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+  }
+
+  .glitch { position: relative; animation: glitch-main 4s infinite; }
+  .glitch::before, .glitch::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; }
+  .glitch::before { color: var(--red); animation: glitch-before 4s infinite; clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%); }
+  .glitch::after { color: var(--cyan2); animation: glitch-after 4s infinite; clip-path: polygon(0 66%, 100% 66%, 100% 100%, 0 100%); }
+  @keyframes glitch-main { 0%,90%,100%{transform:none} 92%{transform:skew(-1deg)} 94%{transform:skew(1deg)} }
+  @keyframes glitch-before { 0%,90%,100%{transform:none;opacity:0} 92%{transform:translate(-3px,0);opacity:0.7} 94%{transform:translate(3px,0);opacity:0} }
+  @keyframes glitch-after { 0%,90%,100%{transform:none;opacity:0} 93%{transform:translate(3px,0);opacity:0.7} 95%{transform:translate(-3px,0);opacity:0} }
+
+  .ticker {
+    background: linear-gradient(90deg, rgba(255, 92, 122, 0.08), rgba(255, 77, 157, 0.14), rgba(255, 92, 122, 0.08));
+    border-top: 1px solid rgba(255, 92, 122, 0.35);
+    border-bottom: 1px solid rgba(255, 92, 122, 0.35);
+    padding: 0.75rem 0;
+    overflow: hidden;
+    position: relative;
+  }
+  .ticker::before, .ticker::after {
+    content: '';
+    position: absolute; top: 0; bottom: 0; width: 80px; z-index: 2; pointer-events: none;
+  }
+  .ticker::before { left: 0; background: linear-gradient(90deg, var(--bg-2), transparent); }
+  .ticker::after { right: 0; background: linear-gradient(-90deg, var(--bg-2), transparent); }
+  .ticker-inner { display: flex; gap: 4rem; animation: ticker 30s linear infinite; white-space: nowrap; }
+  .ticker-item {
+    font-family: var(--mono); font-size: 0.7rem;
+    color: #ffb1bf; letter-spacing: 2px;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  /* MVP SCANNER APP */
+  #scanner-app {
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 0%, rgba(177, 108, 255, 0.08), transparent 60%),
+      linear-gradient(180deg, var(--bg-2), var(--bg));
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  #scanner-app::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 80% 20%, rgba(255, 138, 61, 0.06), transparent 40%);
+    pointer-events: none;
+  }
+  .scan-shell {
+    max-width: 980px;
+    margin: 3rem auto 0;
+    padding: 2.2rem;
+    border: 1px solid rgba(255, 77, 157, 0.28);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(165deg, rgba(24, 18, 36, 0.92), rgba(14, 10, 22, 0.88));
+    box-shadow: var(--shadow-soft), var(--shadow-glow), inset 0 1px 0 rgba(255,255,255,0.05);
+    backdrop-filter: blur(16px);
+    position: relative;
+    overflow: hidden;
+  }
+  .scan-shell::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(255, 77, 157, 0.45), transparent 40%, rgba(255, 138, 61, 0.35));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0.7;
+  }
+  .scan-shell::after {
+    content: '';
+    position: absolute;
+    top: -40%; left: -20%;
+    width: 60%; height: 80%;
+    background: radial-gradient(circle, rgba(177, 108, 255, 0.12), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .scan-shell > * { position: relative; z-index: 1; }
+  .scan-form {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.8rem;
+    margin-top: 1rem;
+  }
+  .scan-input {
+    width: 100%;
+    padding: 0.95rem 1.15rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 77, 157, 0.35);
+    background: rgba(8, 6, 13, 0.85);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    outline: none;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  }
+  .scan-input:focus {
+    border-color: rgba(255, 138, 61, 0.75);
+    box-shadow: 0 0 0 4px rgba(255, 138, 61, 0.12), 0 0 24px rgba(255, 138, 61, 0.1);
+    background: rgba(10, 8, 16, 0.95);
+  }
+  .scan-input::placeholder { color: rgba(228,217,242,0.35); }
+  .scan-status {
+    margin-top: 1rem;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    color: rgba(228,217,242,0.75);
+    min-height: 1.2rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+  .scan-status.error {
+    color: #ff9bb0;
+    background: rgba(255, 92, 122, 0.08);
+    border-color: rgba(255, 92, 122, 0.2);
+  }
+  .scan-status.ok {
+    color: #8cffda;
+    background: rgba(100, 247, 200, 0.06);
+    border-color: rgba(100, 247, 200, 0.18);
+  }
+  .scan-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .scan-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 1.3rem;
+    background: linear-gradient(160deg, rgba(16, 12, 24, 0.9), rgba(10, 8, 16, 0.75));
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .scan-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--purple), var(--cyan2));
+    opacity: 0.55;
+  }
+  .scan-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--border-strong);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+  }
+  .scan-k {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 2px;
+    color: rgba(228,217,242,0.55);
+    margin-bottom: 0.4rem;
+  }
+  .scan-v {
+    font-family: var(--display);
+    letter-spacing: 1px;
+    font-size: 1.1rem;
+    color: #fff;
+  }
+  .risk-pill {
+    display: inline-flex;
+    border-radius: 999px;
+    border: 1px solid;
+    padding: 0.35rem 0.8rem;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+  }
+  .risk-low { color: #8cffda; border-color: rgba(100,247,200,0.5); background: rgba(100,247,200,0.1); box-shadow: 0 0 16px rgba(100,247,200,0.12); }
+  .risk-medium { color: #ffd9a0; border-color: rgba(255,193,90,0.5); background: rgba(255,193,90,0.1); box-shadow: 0 0 16px rgba(255,193,90,0.1); }
+  .risk-high { color: #ffb3c1; border-color: rgba(255,92,122,0.6); background: rgba(255,92,122,0.12); box-shadow: 0 0 18px rgba(255,92,122,0.15); }
+  .scan-list {
+    margin-top: 0.7rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.88rem;
+    color: rgba(228,217,242,0.78);
+  }
+  .scan-list li {
+    list-style: none;
+    border: 1px solid rgba(255, 77, 157, 0.18);
+    border-radius: var(--radius-sm);
+    padding: 0.62rem 0.85rem;
+    background: linear-gradient(135deg, rgba(255, 77, 157, 0.06), rgba(177, 108, 255, 0.03));
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  .scan-list li:hover {
+    border-color: rgba(255, 138, 61, 0.35);
+    transform: translateX(3px);
+  }
+  .scan-subsection {
+    margin-top: 1.75rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--border);
+    position: relative;
+  }
+  .scan-subsection::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 0;
+    width: 120px; height: 2px;
+    background: linear-gradient(90deg, var(--cyan2), transparent);
+  }
+  .scan-subsection h3 {
+    font-family: var(--display);
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    color: #ffd2ea;
+    margin-bottom: 0.75rem;
+  }
+  .pwd-result {
+    margin-top: 0.75rem;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: rgba(228,217,242,0.8);
+    line-height: 1.6;
+  }
+
+  section {
+    padding: 6.5rem 3rem;
+    position: relative;
+  }
+  section > .section-label,
+  section > h2,
+  section > p,
+  section > .scan-shell,
+  section > .problem-grid,
+  section > .flow,
+  section > .features-grid,
+  section > .report-wrapper,
+  section > .tech-grid,
+  section > .roadmap-track,
+  section > .future-grid,
+  section > .challenges-list,
+  section > .audience-wrap,
+  section > .cta-actions {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .section-label {
+    font-family: var(--mono); font-size: 0.65rem;
+    color: var(--cyan2); letter-spacing: 4px;
+    margin-bottom: 0.65rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .section-label::before { content: '//'; color: var(--purple); }
+  h2 {
+    font-family: var(--display);
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 900; letter-spacing: -1px;
+    margin-bottom: 1rem; line-height: 1.05;
+  }
+  h2 span {
+    background: linear-gradient(90deg, currentColor, var(--cyan2));
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  #problem { background: linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%); }
+  .problem-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+    max-width: 1200px; margin: 4rem auto 0;
+  }
+  .problem-stat {
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(160deg, rgba(22, 17, 31, 0.95), rgba(16, 12, 24, 0.8));
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+    backdrop-filter: blur(10px);
+  }
+  .problem-stat:hover {
+    transform: translateY(-5px);
+    border-color: var(--border-strong);
+    box-shadow: 0 20px 45px rgba(0,0,0,0.3), 0 0 30px rgba(255, 138, 61, 0.08);
+  }
+  .problem-stat::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--purple), var(--cyan2));
+  }
+  .problem-stat .big-num {
+    font-family: var(--display);
+    font-size: 4rem; font-weight: 900;
+    background: linear-gradient(135deg, #ffbfcd, #ffd4a4);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+    filter: drop-shadow(0 0 20px rgba(255, 92, 122, 0.35));
+    line-height: 1;
+  }
+  .problem-stat .label { font-size: 1rem; color: var(--text); margin-top: 0.5rem; font-weight: 300; }
+  .problem-stat .sub { font-family: var(--mono); font-size: 0.65rem; color: rgba(228,217,242,0.45); margin-top: 0.3rem; letter-spacing: 1px; }
+
+  .problem-items { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 1rem; }
+  .problem-item {
+    padding: 2rem;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    background: linear-gradient(135deg, var(--card), rgba(177,108,255,0.06));
+    position: relative;
+    transition: all 0.3s;
+  }
+  .problem-item:hover { border-color: rgba(177,108,255,0.6); box-shadow: 0 0 28px rgba(177,108,255,0.12); }
+  .problem-item .icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+  .problem-item h3 { font-family: var(--display); font-size: 0.9rem; letter-spacing: 2px; color: #fff; margin-bottom: 0.75rem; }
+  .problem-item p { font-size: 0.95rem; color: rgba(228,217,242,0.66); line-height: 1.6; font-weight: 300; }
+  .result-banner {
+    grid-column: 1/-1;
+    padding: 1.25rem 1.8rem;
+    border-radius: 999px;
+    background: rgba(255, 92, 122, 0.09);
+    border: 1px solid rgba(255, 92, 122, 0.35);
+    font-family: var(--mono); font-size: 0.82rem;
+    color: #ffbdc9; letter-spacing: 1.6px;
+    display: flex; align-items: center; gap: 1rem;
+  }
+
+  #how { background: var(--bg-2); }
+  .flow {
+    max-width: 1100px; margin: 4rem auto 0;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+    position: relative;
+  }
+  .flow::before {
+    content: '';
+    position: absolute;
+    top: 60px; left: 10%; right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan2), transparent);
+  }
+  .flow-step { display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem; text-align: center; position: relative; }
+  .flow-num {
+    width: 80px; height: 80px;
+    border: 2px solid var(--cyan2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--display); font-size: 1.5rem; font-weight: 900;
+    color: #ffd7a5;
+    background: var(--bg);
+    margin-bottom: 1.5rem;
+    position: relative; z-index: 2;
+    transition: all 0.3s;
+  }
+  .flow-step:hover .flow-num { background: var(--cyan2); color: #2a1402; box-shadow: 0 0 30px rgba(255,138,61,0.45); }
+  .flow-step h3 { font-family: var(--display); font-size: 0.75rem; letter-spacing: 2px; color: #fff; margin-bottom: 0.75rem; }
+  .flow-step p { font-size: 0.9rem; color: rgba(228,217,242,0.58); line-height: 1.5; font-weight: 300; }
+  .flow-tag { font-family: var(--mono); font-size: 0.6rem; color: #ffd2ae; letter-spacing: 2px; margin-top: 0.75rem; }
+
+  #features { background: var(--bg); }
+  .features-grid {
+    max-width: 1200px; margin: 4rem auto 0;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
+  }
+  .feature-card {
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(165deg, rgba(22, 17, 31, 0.92), rgba(14, 10, 22, 0.85));
+    position: relative; overflow: hidden;
+    transition: all 0.4s ease;
+    cursor: none;
+    backdrop-filter: blur(8px);
+  }
+  .feature-card::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,77,157,0.04), transparent);
+    opacity: 0; transition: opacity 0.4s;
+  }
+  .feature-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(255, 138, 61, 0.55);
+    box-shadow: 0 22px 50px rgba(0,0,0,0.32), 0 0 35px rgba(255, 77, 157, 0.1);
+  }
+  .feature-card:hover::after { opacity: 1; }
+  .feature-icon {
+    font-size: 2.5rem; margin-bottom: 1.5rem; display: block;
+    filter: drop-shadow(0 0 10px rgba(255, 138, 61, 0.35));
+  }
+  .feature-card h3 { font-family: var(--display); font-size: 0.85rem; letter-spacing: 2px; color: #ffd2ea; margin-bottom: 0.75rem; }
+  .feature-card p { font-size: 0.95rem; color: rgba(228,217,242,0.62); line-height: 1.6; font-weight: 300; }
+  .feature-card .fc-accent { position: absolute; bottom: 0; left: 0; right: 0; height: 2px; transform: scaleX(0); transition: transform 0.4s; transform-origin: left; }
+  .feature-card:hover .fc-accent { transform: scaleX(1); }
+  .fc-1 .fc-accent { background: var(--cyan2); }
+  .fc-2 .fc-accent { background: var(--purple); }
+  .fc-3 .fc-accent { background: var(--red); }
+  .fc-4 .fc-accent { background: var(--amber); }
+  .fc-5 .fc-accent { background: var(--green); }
+
+  #report { background: var(--bg-2); overflow: hidden; }
+  .report-wrapper {
+    max-width: 1100px; margin: 4rem auto 0;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
+    align-items: center;
+  }
+  .report-terminal {
+    background: linear-gradient(180deg, #0c0a12, #08060d);
+    border: 1px solid rgba(255, 77, 157, 0.32);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    position: relative;
+    box-shadow: 0 0 58px rgba(255, 77, 157, 0.12), 0 0 120px rgba(177, 108, 255, 0.08), var(--shadow-soft);
+  }
+  .report-terminal::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 255, 255, 0.015) 2px,
+      rgba(255, 255, 255, 0.015) 4px
+    );
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  .terminal-bar {
+    padding: 0.6rem 1rem;
+    background: rgba(255, 77, 157, 0.07);
+    border-bottom: 1px solid rgba(255, 77, 157, 0.14);
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.65rem; color: rgba(228,217,242,0.42); letter-spacing: 2px;
+  }
+  .t-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .t-dot.r { background: var(--red); } .t-dot.y { background: var(--amber); } .t-dot.g { background: var(--green); }
+  .terminal-body { padding: 1.5rem; line-height: 2; }
+  .t-line { display: flex; align-items: baseline; gap: 0.5rem; opacity: 0; }
+  .t-line.visible { opacity: 1; animation: fadeInLine 0.3s ease forwards; }
+  @keyframes fadeInLine { from{opacity:0;transform:translateX(-4px)} to{opacity:1;transform:none} }
+  .t-prompt { color: var(--green); } .t-cmd { color: #fff; }
+  .t-comment { color: rgba(228,217,242,0.42); font-size: 0.7rem; }
+  .t-key { color: #ffc9a4; } .t-val { color: var(--amber); }
+  .t-red { color: var(--red); font-weight: bold; }
+  .t-green { color: var(--green); } .t-purple { color: var(--purple); }
+  .t-blank { height: 0.5rem; }
+  .cursor-blink { display: inline-block; width: 8px; height: 14px; background: var(--cyan2); animation: blink 1s step-end infinite; vertical-align: middle; }
+
+  .report-info h3 { font-family: var(--display); font-size: 1.5rem; letter-spacing: 2px; color: #fff; margin-bottom: 1.5rem; }
+  .rinfo-item { display: flex; align-items: flex-start; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--border); }
+  .rinfo-num { font-family: var(--display); font-size: 2rem; font-weight: 900; color: #ffd4a4; opacity: 0.35; width: 40px; flex-shrink: 0; }
+  .rinfo-text h4 { font-size: 1rem; color: #fff; margin-bottom: 0.25rem; letter-spacing: 1px; }
+  .rinfo-text p { font-size: 0.9rem; color: rgba(228,217,242,0.56); font-weight: 300; }
+
+  #tech { background: var(--bg); }
+  .tech-grid { max-width: 1100px; margin: 4rem auto 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+  .tech-card {
+    padding: 2rem;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    background: var(--card);
+    transition: all 0.3s;
+    position: relative;
+  }
+  .tech-card::before {
+    content: '';
+    position: absolute; top: 14px; right: 14px;
+    width: 12px; height: 12px; border-radius: 50%;
+  }
+  .tech-card.fe::before { background: var(--cyan2); }
+  .tech-card.be::before { background: var(--purple); }
+  .tech-card.api::before { background: var(--amber); }
+  .tech-card.db::before { background: var(--green); }
+  .tech-card:hover { transform: translateY(-4px); border-color: rgba(255,138,61,0.45); }
+  .tech-layer { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 3px; margin-bottom: 1rem; }
+  .tc-fe .tech-layer { color: var(--cyan2); }
+  .tc-be .tech-layer { color: var(--purple); }
+  .tc-api .tech-layer { color: var(--amber); }
+  .tc-db .tech-layer { color: var(--green); }
+  .tech-card .icon { font-size: 2rem; margin-bottom: 1rem; display: block; }
+  .tech-stack-items { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; }
+  .tech-tag {
+    font-family: var(--mono); font-size: 0.65rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    background: rgba(255,77,157,0.06);
+    border: 1px solid rgba(255,77,157,0.2);
+    color: rgba(228,217,242,0.74); letter-spacing: 1px;
+    width: fit-content;
+  }
+
+  #roadmap { background: var(--bg-2); }
+  .roadmap-track { max-width: 1000px; margin: 4rem auto 0; position: relative; padding-left: 3rem; }
+  .roadmap-track::before {
+    content: '';
+    position: absolute; left: 0.5rem; top: 0; bottom: 0; width: 1px;
+    background: linear-gradient(180deg, var(--cyan2), var(--purple), transparent);
+  }
+  .rm-item { position: relative; padding: 0 0 3rem 2rem; opacity: 0.45; transition: opacity 0.3s; }
+  .rm-item.active { opacity: 1; }
+  .rm-dot {
+    position: absolute; left: -2.5rem; top: 0;
+    width: 18px; height: 18px;
+    border: 2px solid var(--cyan2);
+    border-radius: 50%;
+    background: var(--bg);
+    transition: all 0.3s;
+  }
+  .rm-item.active .rm-dot { background: var(--cyan2); box-shadow: 0 0 15px rgba(255,138,61,0.65); }
+  .rm-week { font-family: var(--mono); font-size: 0.65rem; color: #ffd3ad; letter-spacing: 3px; margin-bottom: 0.5rem; }
+  .rm-item h3 { font-family: var(--display); font-size: 1.1rem; letter-spacing: 2px; color: #fff; margin-bottom: 0.5rem; }
+  .rm-item p { font-size: 0.95rem; color: rgba(228,217,242,0.56); font-weight: 300; max-width: 500px; }
+  .rm-badge {
+    display: inline-block; margin-top: 0.75rem;
+    font-family: var(--mono); font-size: 0.6rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    letter-spacing: 2px;
+  }
+  .badge-done { border: 1px solid var(--green); color: var(--green); }
+  .badge-next { border: 1px solid var(--amber); color: var(--amber); animation: blink 2s step-end infinite; }
+
+  #future { background: var(--bg); }
+  .future-grid { max-width: 1100px; margin: 4rem auto 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+  .future-card {
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    background: var(--card);
+    display: grid; grid-template-columns: auto 1fr; gap: 1.5rem;
+    align-items: start;
+    transition: all 0.3s;
+  }
+  .future-card:hover { border-color: rgba(255,138,61,0.45); transform: translateX(4px); }
+  .future-icon { font-size: 2.5rem; }
+  .future-card h3 { font-family: var(--display); font-size: 0.85rem; letter-spacing: 2px; color: #ffd2ea; margin-bottom: 0.5rem; }
+  .future-card p { font-size: 0.9rem; color: rgba(228,217,242,0.56); line-height: 1.6; font-weight: 300; }
+  .future-phase { font-family: var(--mono); font-size: 0.6rem; color: var(--purple); letter-spacing: 2px; margin-top: 0.5rem; }
+
+  #challenges { background: var(--bg-2); }
+  .challenges-list { max-width: 1000px; margin: 4rem auto 0; display: flex; flex-direction: column; gap: 1.5rem; }
+  .challenge {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    background: var(--card);
+    position: relative; overflow: hidden;
+    transition: all 0.3s;
+  }
+  .challenge::before {
+    content: '';
+    position: absolute; left: 1.2rem; top: 50%;
+    width: 10px; height: 10px;
+    transform: translateY(-50%);
+    background: var(--red);
+    border-radius: 50%;
+  }
+  .challenge:hover { border-color: rgba(255,92,122,0.45); }
+  .ch-icon { font-size: 2rem; margin-bottom: 0.75rem; display: block; }
+  .ch-left h3 { font-family: var(--display); font-size: 0.85rem; letter-spacing: 2px; color: var(--red); margin-bottom: 0.5rem; }
+  .ch-left p { font-size: 0.9rem; color: rgba(228,217,242,0.56); line-height: 1.5; font-weight: 300; }
+  .ch-right {
+    padding: 1.5rem;
+    border-radius: 18px;
+    background: rgba(100,247,200,0.05);
+    border: 1px solid rgba(100,247,200,0.2);
+    border-left: 3px solid var(--green);
+  }
+  .ch-right .fix-label { font-family: var(--mono); font-size: 0.6rem; color: var(--green); letter-spacing: 2px; margin-bottom: 0.5rem; }
+  .ch-right p { font-size: 0.9rem; color: rgba(228,217,242,0.67); line-height: 1.5; font-weight: 300; }
+
+  #audience { background: var(--bg); }
+  .audience-wrap { max-width: 1100px; margin: 4rem auto 0; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+  .audience-col h3 { font-family: var(--display); font-size: 0.8rem; letter-spacing: 3px; margin-bottom: 1.5rem; }
+  .aud-users h3 { color: var(--cyan2); }
+  .aud-biz h3 { color: var(--purple); }
+  .aud-item {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1rem 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    margin-bottom: 0.75rem;
+    transition: all 0.3s;
+  }
+  .aud-item:hover { transform: translateX(6px); border-color: rgba(255,138,61,0.4); }
+  .aud-item .ai-icon { font-size: 1.5rem; }
+  .aud-item h4 { font-size: 1rem; color: #fff; margin-bottom: 0.15rem; }
+  .aud-item p { font-size: 0.8rem; color: rgba(228,217,242,0.45); font-weight: 300; }
+
+  #cta {
+    padding: 8rem 3rem;
+    background:
+      radial-gradient(ellipse 70% 60% at 50% 50%, rgba(255, 77, 157, 0.1), transparent 65%),
+      var(--bg-2);
+    text-align: center; position: relative; overflow: hidden;
+  }
+  #cta .bg-glow {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px; height: 400px;
+    background: radial-gradient(ellipse, rgba(255, 77, 157, 0.11) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  #cta h2 { position: relative; margin-bottom: 1.5rem; }
+  #cta p { font-size: 1.1rem; color: rgba(228,217,242,0.58); max-width: 500px; margin: 0 auto 3rem; line-height: 1.6; font-weight: 300; }
+  .cta-actions { display: flex; justify-content: center; gap: 1rem; }
+
+  footer {
+    padding: 2.2rem 3rem;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--mono); font-size: 0.65rem; color: rgba(228,217,242,0.42);
+    letter-spacing: 2px;
+    background: linear-gradient(180deg, transparent, rgba(8, 6, 13, 0.9));
+    position: relative;
+  }
+  footer::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 15%; right: 15%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--glow-pink), transparent);
+  }
+
+  .reveal { opacity: 0; transform: translateY(36px); transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+  .reveal.visible { opacity: 1; transform: none; }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+
+  .scan-line {
+    position: absolute; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--cyan2), transparent);
+    opacity: 0.35;
+    animation: scan 4s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes scan { from{top:0%} to{top:100%} }
+
+  .hero-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 35%, rgba(8, 6, 13, 0.55) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .tech-card, .future-card, .challenge, .aud-item, .problem-item {
+    backdrop-filter: blur(8px);
+  }
+
+  .flow-num {
+    box-shadow: 0 0 0 6px rgba(255, 138, 61, 0.06);
+  }
+
+  .result-banner {
+    backdrop-filter: blur(8px);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+
+  @media(max-width: 900px) {
+    .problem-grid, .problem-items, .report-wrapper, .future-grid, .challenge, .audience-wrap, .scan-grid { grid-template-columns: 1fr; }
+    .flow { grid-template-columns: 1fr 1fr; }
+    .flow::before { display: none; }
+    .features-grid { grid-template-columns: 1fr 1fr; }
+    .tech-grid { grid-template-columns: 1fr 1fr; }
+    .scan-form { grid-template-columns: 1fr; }
+    nav { padding: 1rem 1.5rem; }
+    section { padding: 4rem 1.5rem; }
+  }
+  @media(max-width: 650px) {
+    .nav-links { display: none; }
+    .features-grid { grid-template-columns: 1fr; }
+    .tech-grid { grid-template-columns: 1fr; }
+    .scan-shell { padding: 1.2rem; }
+    footer { flex-direction: column; gap: 0.8rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">OZONE<span>//</span>WATCH</div>
+  <div class="nav-links">
+    <a href="#problem">PROBLEM</a>
+    <a href="#how">HOW</a>
+    <a href="#features">FEATURES</a>
+    <a href="#report">DEMO</a>
+    <a href="#roadmap">ROADMAP</a>
+  </div>
+  <div class="nav-badge">LIVE THREAT FEED</div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="grid-bg"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="scan-line"></div>
+  <div class="hero-vignette" aria-hidden="true"></div>
+
+  <div class="hero-content">
+    <div class="hero-tag">
+      <span class="dot"></span>
+      CYBERSECURITY SAAS &nbsp;·&nbsp; DATA EXPOSURE DETECTION
+    </div>
+    <h1 class="hero-title">
+      <span class="line1 glitch" data-text="OZONE">OZONE</span>
+      <span class="line2">WATCH</span>
+      <span class="line3">SYSTEM</span>
+    </h1>
+    <p class="hero-sub">Know where your data lives before hackers do. Scan. Detect. Protect.</p>
+    <div class="hero-actions">
+      <button class="btn-primary js-scan-trigger">SCAN NOW →</button>
+      <button class="btn-ghost">VIEW DEMO</button>
+    </div>
+  </div>
+</section>
+
+<!-- MVP SCANNER APP -->
+<section id="scanner-app">
+  <div class="section-label">00 &nbsp; MVP_SCANNER</div>
+  <h2>Run a <span style="color:var(--cyan2)">Free Multi-Source Scan</span></h2>
+  <p style="color:rgba(228,217,242,0.56);font-size:1.05rem;max-width:720px;margin-top:0.75rem;font-weight:300;line-height:1.6;">
+    No paid API keys needed. Combines free tiers from XposedOrNot, LeakCheck public API, Disify email intel, and HIBP Pwned Passwords.
+  </p>
+
+  <div class="scan-shell reveal">
+    <form class="scan-form" id="scanForm">
+      <input id="scanInput" class="scan-input" type="text" placeholder="Enter email or phone number" autocomplete="off" />
+      <button type="submit" class="btn-primary">RUN SCAN</button>
+    </form>
+    <div id="scanStatus" class="scan-status">SYSTEM READY</div>
+
+    <div class="scan-grid">
+      <div class="scan-card">
+        <div class="scan-k">SCAN TARGET</div>
+        <div id="scanTarget" class="scan-v">-</div>
+      </div>
+      <div class="scan-card">
+        <div class="scan-k">RISK LEVEL</div>
+        <div id="scanRiskWrap"><span class="risk-pill risk-low">LOW</span></div>
+      </div>
+      <div class="scan-card">
+        <div class="scan-k">BREACHES FOUND</div>
+        <div id="scanCount" class="scan-v">0</div>
+      </div>
+      <div class="scan-card">
+        <div class="scan-k">EXPOSED DATA TYPES</div>
+        <div id="scanDataTypes" class="scan-v">-</div>
+      </div>
+    </div>
+
+    <div class="scan-card" style="margin-top:1rem;">
+      <div class="scan-k">BREACH SOURCES (FREE APIS)</div>
+      <ul id="scanBreaches" class="scan-list">
+        <li>No scans yet.</li>
+      </ul>
+    </div>
+
+    <div class="scan-grid" style="margin-top:1rem;">
+      <div class="scan-card">
+        <div class="scan-k">ACTIVE DATA SOURCES</div>
+        <ul id="scanSources" class="scan-list">
+          <li>XposedOrNot · LeakCheck · Disify</li>
+        </ul>
+      </div>
+      <div class="scan-card">
+        <div class="scan-k">EMAIL / PHONE INTEL</div>
+        <ul id="scanIntel" class="scan-list">
+          <li>Run a scan for domain, disposable, and hit-count intel.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="scan-card" style="margin-top:1rem;">
+      <div class="scan-k">RECOMMENDED ACTIONS</div>
+      <ul id="scanActions" class="scan-list">
+        <li>Run a scan to generate recommendations.</li>
+      </ul>
+    </div>
+
+    <div class="scan-subsection">
+      <h3>// BONUS: PASSWORD LEAK CHECK (FREE)</h3>
+      <p style="color:rgba(228,217,242,0.56);font-size:0.9rem;margin-bottom:1rem;font-weight:300;">
+        Uses HIBP's free k-anonymity API. Your full password is hashed locally on the server and never stored.
+      </p>
+      <form class="scan-form" id="pwdForm">
+        <input id="pwdInput" class="scan-input" type="password" placeholder="Check if a password appears in breach lists" autocomplete="off" />
+        <button type="submit" class="btn-primary">CHECK PASSWORD</button>
+      </form>
+      <div id="pwdStatus" class="scan-status">READY</div>
+      <div id="pwdResult" class="pwd-result"></div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span class="ticker-item"><span>[!]</span> LINKEDIN BREACH — 700M RECORDS EXPOSED</span>
+    <span class="ticker-item"><span>[!]</span> CANVA BREACH — 139M USER EMAILS LEAKED</span>
+    <span class="ticker-item"><span>[!]</span> ADOBE BREACH — 153M ACCOUNTS COMPROMISED</span>
+    <span class="ticker-item"><span>[!]</span> FACEBOOK SCRAPE — 533M PHONE NUMBERS EXPOSED</span>
+    <span class="ticker-item"><span>[!]</span> ROCKYOU2024 — 10 BILLION PASSWORDS LEAKED</span>
+    <span class="ticker-item"><span>[!]</span> LINKEDIN BREACH — 700M RECORDS EXPOSED</span>
+    <span class="ticker-item"><span>[!]</span> CANVA BREACH — 139M USER EMAILS LEAKED</span>
+    <span class="ticker-item"><span>[!]</span> ADOBE BREACH — 153M ACCOUNTS COMPROMISED</span>
+    <span class="ticker-item"><span>[!]</span> FACEBOOK SCRAPE — 533M PHONE NUMBERS EXPOSED</span>
+    <span class="ticker-item"><span>[!]</span> ROCKYOU2024 — 10 BILLION PASSWORDS LEAKED</span>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="section-label">01 &nbsp; PROBLEM_STATEMENT</div>
+  <h2>Your Data Is <span style="color:var(--red)">Out There.</span></h2>
+  <p style="color:rgba(228,217,242,0.56);font-size:1.1rem;max-width:600px;margin-top:0.75rem;font-weight:300;line-height:1.6;">Millions of people have their personal data exposed every year — and most never find out until it's too late.</p>
+
+  <div class="problem-grid">
+    <div class="problem-stat reveal">
+      <div class="big-num">10B+</div>
+      <div class="label">Records leaked globally each year</div>
+      <div class="sub">SOURCE: ROCKYOU2024 COMPILATION</div>
+    </div>
+    <div class="problem-stat reveal reveal-delay-1">
+      <div class="big-num">94%</div>
+      <div class="label">Of victims don't know they were breached</div>
+      <div class="sub">SOURCE: IDENTITY THEFT RESOURCE CENTER</div>
+    </div>
+    <div class="problem-items">
+      <div class="problem-item reveal">
+        <span class="icon">[01]</span>
+        <h3>INVISIBLE EXPOSURE</h3>
+        <p>Users have zero visibility into which platforms leaked their email, phone, or password.</p>
+      </div>
+      <div class="problem-item reveal reveal-delay-1">
+        <span class="icon">[02]</span>
+        <h3>COMPROMISED CREDS</h3>
+        <p>Credential stuffing attacks exploit leaked passwords to hijack accounts within hours.</p>
+      </div>
+      <div class="problem-item reveal reveal-delay-2">
+        <span class="icon">[03]</span>
+        <h3>RISING SCAMS</h3>
+        <p>OTP frauds, phishing, job scams — all powered by leaked personal data from breaches.</p>
+      </div>
+      <div class="result-banner reveal">
+        <span style="font-size:1.5rem">[+]</span>
+        RESULT: USERS REMAIN VULNERABLE WITHOUT EVEN KNOWING IT. OZONE WATCH CHANGES THAT.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-label">02 &nbsp; WORKING_FLOW</div>
+  <h2>Four Steps to <span style="color:var(--cyan2)">Total Clarity</span></h2>
+
+  <div class="flow">
+    <div class="flow-step reveal">
+      <div class="flow-num">01</div>
+      <h3>INPUT</h3>
+      <p>Enter your email address or phone number into the scanner</p>
+      <div class="flow-tag">≤ 2 SECONDS</div>
+    </div>
+    <div class="flow-step reveal reveal-delay-1">
+      <div class="flow-num">02</div>
+      <h3>SCAN</h3>
+      <p>System queries XposedOrNot, LeakCheck public API, and Disify</p>
+      <div class="flow-tag">FREE MULTI-SOURCE</div>
+    </div>
+    <div class="flow-step reveal reveal-delay-2">
+      <div class="flow-num">03</div>
+      <h3>ANALYZE</h3>
+      <p>Risk level calculated based on breach severity, recency, and data types</p>
+      <div class="flow-tag">AI RISK ENGINE</div>
+    </div>
+    <div class="flow-step reveal reveal-delay-3">
+      <div class="flow-num">04</div>
+      <h3>REPORT</h3>
+      <p>Instant security report with actionable recommendations delivered</p>
+      <div class="flow-tag">INSTANT OUTPUT</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-label">03 &nbsp; CORE_FEATURES</div>
+  <h2>Everything You Need to <span style="color:var(--cyan2)">Stay Safe</span></h2>
+
+  <div class="features-grid">
+    <div class="feature-card fc-1 reveal">
+      <span class="feature-icon">📧</span>
+      <h3>EMAIL BREACH DETECTION</h3>
+      <p>Scans thousands of known breach databases to check if your email appeared in any data leak event.</p>
+      <div class="fc-accent"></div>
+    </div>
+    <div class="feature-card fc-2 reveal reveal-delay-1">
+      <span class="feature-icon">📱</span>
+      <h3>PHONE EXPOSURE ANALYSIS</h3>
+      <p>Analyzes public and dark web sources for your phone number being exposed, scraped, or traded.</p>
+      <div class="fc-accent"></div>
+    </div>
+    <div class="feature-card fc-3 reveal reveal-delay-2">
+      <span class="feature-icon">🔐</span>
+      <h3>RISK SCORING SYSTEM</h3>
+      <p>Calculates a HIGH / MEDIUM / LOW risk score based on breach severity, data type, and recency.</p>
+      <div class="fc-accent"></div>
+    </div>
+    <div class="feature-card fc-4 reveal">
+      <span class="feature-icon">📊</span>
+      <h3>SIMPLE SECURITY REPORT</h3>
+      <p>Clean, readable report showing exactly what was exposed, which platforms, and when it happened.</p>
+      <div class="fc-accent"></div>
+    </div>
+    <div class="feature-card fc-5 reveal reveal-delay-1" style="grid-column: span 2;">
+      <span class="feature-icon">🛡️</span>
+      <h3>PERSONALIZED RECOMMENDATIONS</h3>
+      <p>Tailored action steps: change specific passwords, enable 2FA on at-risk platforms, and monitor your accounts. No generic advice — specific guidance based on your exact exposure profile.</p>
+      <div class="fc-accent"></div>
+    </div>
+  </div>
+</section>
+
+<!-- SAMPLE REPORT -->
+<section id="report">
+  <div class="section-label">04 &nbsp; SAMPLE_OUTPUT</div>
+  <h2>Your Report. <span style="color:var(--red)">Instant.</span></h2>
+
+  <div class="report-wrapper">
+    <div class="report-terminal reveal">
+      <div class="terminal-bar">
+        <div class="t-dot r"></div><div class="t-dot y"></div><div class="t-dot g"></div>
+        <span style="margin-left:0.5rem">OZONE_WATCH — SCAN_RESULT.log</span>
+      </div>
+      <div class="terminal-body" id="terminal">
+        <div class="t-line"><span class="t-prompt">$</span><span class="t-cmd">ozone-watch --scan user@example.com</span></div>
+        <div class="t-line t-comment"># Connecting to breach databases...</div>
+        <div class="t-line t-comment"># Querying HIBP API v3...</div>
+        <div class="t-line t-comment"># Running OSINT cross-check...</div>
+        <div class="t-blank"></div>
+        <div class="t-line"><span class="t-key">STATUS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="t-red">HIGH RISK</span></div>
+        <div class="t-line"><span class="t-key">BREACHES&nbsp;&nbsp;</span><span class="t-val">3 found</span></div>
+        <div class="t-blank"></div>
+        <div class="t-line"><span class="t-red">> LinkedIn (2021)</span></div>
+        <div class="t-line t-comment">&nbsp;&nbsp;leaked: emails, passwords, names</div>
+        <div class="t-line"><span class="t-red">> Canva (2020)</span></div>
+        <div class="t-line t-comment">&nbsp;&nbsp;leaked: usernames, passwords</div>
+        <div class="t-line"><span class="t-red">> Adobe (2019)</span></div>
+        <div class="t-line t-comment">&nbsp;&nbsp;leaked: email, encrypted passwords</div>
+        <div class="t-blank"></div>
+        <div class="t-line"><span class="t-key">ACTION&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="t-green">3 recommendations</span></div>
+        <div class="t-line t-green">&nbsp;&nbsp;[1] Change passwords immediately</div>
+        <div class="t-line t-green">&nbsp;&nbsp;[2] Enable 2FA on all accounts</div>
+        <div class="t-line t-green">&nbsp;&nbsp;[3] Use a password manager</div>
+        <div class="t-blank"></div>
+        <div class="t-line"><span class="t-prompt">$</span><span class="cursor-blink"></span></div>
+      </div>
+    </div>
+    <div class="report-info reveal reveal-delay-1">
+      <h3>WHAT YOU GET</h3>
+      <div class="rinfo-item">
+        <div class="rinfo-num">01</div>
+        <div class="rinfo-text">
+          <h4>Breach Source List</h4>
+          <p>Every platform that leaked your data — named, dated, and ranked by severity.</p>
+        </div>
+      </div>
+      <div class="rinfo-item">
+        <div class="rinfo-num">02</div>
+        <div class="rinfo-text">
+          <h4>Data Type Exposure</h4>
+          <p>Exactly what was leaked: passwords, emails, phone numbers, or personal info.</p>
+        </div>
+      </div>
+      <div class="rinfo-item">
+        <div class="rinfo-num">03</div>
+        <div class="rinfo-text">
+          <h4>Risk Score</h4>
+          <p>A HIGH / MEDIUM / LOW rating based on how exposed and at-risk your accounts are.</p>
+        </div>
+      </div>
+      <div class="rinfo-item">
+        <div class="rinfo-num">04</div>
+        <div class="rinfo-text">
+          <h4>Action Steps</h4>
+          <p>Specific, personalized steps to immediately reduce your risk profile.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section id="tech">
+  <div class="section-label">05 &nbsp; TECHNOLOGY_STACK</div>
+  <h2>Built on <span style="color:var(--cyan2)">Modern Tech</span></h2>
+
+  <div class="tech-grid">
+    <div class="tech-card tc-fe fe reveal">
+      <div class="tech-layer">FRONTEND</div>
+      <span class="icon">[FE]</span>
+      <p style="font-size:0.85rem;color:rgba(228,217,242,0.56);font-weight:300;margin-bottom:1rem;">User interface & experience layer</p>
+      <div class="tech-stack-items">
+        <div class="tech-tag">HTML / CSS</div>
+        <div class="tech-tag">JavaScript</div>
+        <div class="tech-tag">React.js</div>
+      </div>
+    </div>
+    <div class="tech-card tc-be be reveal reveal-delay-1">
+      <div class="tech-layer" style="color:var(--purple)">BACKEND</div>
+      <span class="icon">[BE]</span>
+      <p style="font-size:0.85rem;color:rgba(228,217,242,0.56);font-weight:300;margin-bottom:1rem;">Server logic & processing engine</p>
+      <div class="tech-stack-items">
+        <div class="tech-tag" style="border-color:rgba(177,108,255,0.35)">Python</div>
+        <div class="tech-tag" style="border-color:rgba(177,108,255,0.35)">Flask</div>
+        <div class="tech-tag" style="border-color:rgba(177,108,255,0.35)">FastAPI</div>
+      </div>
+    </div>
+    <div class="tech-card tc-api api reveal reveal-delay-2">
+      <div class="tech-layer" style="color:var(--amber)">APIS</div>
+      <span class="icon">[API]</span>
+      <p style="font-size:0.85rem;color:rgba(228,217,242,0.56);font-weight:300;margin-bottom:1rem;">Data sources & integrations</p>
+      <div class="tech-stack-items">
+        <div class="tech-tag" style="border-color:rgba(255,193,90,0.38)">XposedOrNot</div>
+        <div class="tech-tag" style="border-color:rgba(255,193,90,0.38)">LeakCheck</div>
+        <div class="tech-tag" style="border-color:rgba(255,193,90,0.38)">Disify</div>
+      </div>
+    </div>
+    <div class="tech-card tc-db db reveal reveal-delay-3">
+      <div class="tech-layer" style="color:var(--green)">DATABASE</div>
+      <span class="icon">[DB]</span>
+      <p style="font-size:0.85rem;color:rgba(228,217,242,0.56);font-weight:300;margin-bottom:1rem;">Storage & query layer</p>
+      <div class="tech-stack-items">
+        <div class="tech-tag" style="border-color:rgba(100,247,200,0.38)">MongoDB</div>
+        <div class="tech-tag" style="border-color:rgba(100,247,200,0.38)">PostgreSQL</div>
+        <div class="tech-tag" style="border-color:rgba(100,247,200,0.38)">Redis Cache</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="section-label">06 &nbsp; MVP_ROADMAP</div>
+  <h2>Ship Fast. <span style="color:var(--amber)">Iterate Faster.</span></h2>
+
+  <div class="roadmap-track">
+    <div class="rm-item active reveal">
+      <div class="rm-dot"></div>
+      <div class="rm-week">WEEK 01</div>
+      <h3>EMAIL BREACH DETECTION</h3>
+      <p>Free API integration, email + phone scanner, multi-source results.</p>
+      <span class="rm-badge badge-done">COMPLETE</span>
+    </div>
+    <div class="rm-item active reveal">
+      <div class="rm-dot"></div>
+      <div class="rm-week">WEEK 02</div>
+      <h3>UI + RISK SCORING</h3>
+      <p>Frontend design, risk scoring algorithm, user-friendly results dashboard.</p>
+      <span class="rm-badge badge-done">COMPLETE</span>
+    </div>
+    <div class="rm-item reveal">
+      <div class="rm-dot"></div>
+      <div class="rm-week">WEEK 03</div>
+      <h3>PHONE NUMBER SCANNING</h3>
+      <p>Add phone OSINT capabilities, extended source checking, cross-reference engine.</p>
+      <span class="rm-badge badge-next">IN PROGRESS</span>
+    </div>
+    <div class="rm-item reveal">
+      <div class="rm-dot"></div>
+      <div class="rm-week">WEEK 04</div>
+      <h3>DEPLOYMENT & LAUNCH</h3>
+      <p>Cloud hosting setup, performance optimization, public launch.</p>
+      <span class="rm-badge badge-next">UPCOMING</span>
+    </div>
+  </div>
+</section>
+
+<!-- FUTURE -->
+<section id="future">
+  <div class="section-label">07 &nbsp; FUTURE_SCOPE</div>
+  <h2>What's <span style="color:var(--purple)">Coming Next</span></h2>
+
+  <div class="future-grid">
+    <div class="future-card reveal">
+      <div class="future-icon">[M]</div>
+      <div>
+        <h3>MOBILE APP</h3>
+        <p>Native iOS & Android app for on-the-go monitoring and instant breach alerts pushed to your phone.</p>
+        <div class="future-phase">// PHASE 2</div>
+      </div>
+    </div>
+    <div class="future-card reveal reveal-delay-1">
+      <div class="future-icon">[W]</div>
+      <div>
+        <h3>CHROME EXTENSION</h3>
+        <p>Browser plugin that warns you in real-time when visiting websites known for data breaches.</p>
+        <div class="future-phase">// PHASE 2</div>
+      </div>
+    </div>
+    <div class="future-card reveal">
+      <div class="future-icon">[D]</div>
+      <div>
+        <h3>DARK WEB MONITORING</h3>
+        <p>Continuously scan dark web forums and marketplaces for your leaked credentials being traded.</p>
+        <div class="future-phase">// PHASE 3</div>
+      </div>
+    </div>
+    <div class="future-card reveal reveal-delay-1">
+      <div class="future-icon">[A]</div>
+      <div>
+        <h3>AUTO ALERT SYSTEM</h3>
+        <p>Real-time notifications the moment your data appears in any new breach — before attackers exploit it.</p>
+        <div class="future-phase">// PHASE 3</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHALLENGES -->
+<section id="challenges">
+  <div class="section-label">08 &nbsp; CHALLENGES</div>
+  <h2>Known Risks. <span style="color:var(--green)">Known Fixes.</span></h2>
+
+  <div class="challenges-list">
+    <div class="challenge reveal">
+      <div class="ch-left">
+        <span class="ch-icon">[R1]</span>
+        <h3>API RATE LIMITS</h3>
+        <p>Free public APIs impose usage caps that may restrict scan volume at scale.</p>
+      </div>
+      <div class="ch-right">
+        <div class="fix-label">// MITIGATION</div>
+        <p>Implement intelligent caching, request queuing, and tiered API usage plans to stay within limits while serving users.</p>
+      </div>
+    </div>
+    <div class="challenge reveal">
+      <div class="ch-left">
+        <span class="ch-icon">[R2]</span>
+        <h3>DATA ACCURACY</h3>
+        <p>Breach databases may have outdated, incomplete, or false-positive information affecting results.</p>
+      </div>
+      <div class="ch-right">
+        <div class="fix-label">// MITIGATION</div>
+        <p>Cross-verify across multiple independent sources. Display confidence scores alongside results for full transparency.</p>
+      </div>
+    </div>
+    <div class="challenge reveal">
+      <div class="ch-left">
+        <span class="ch-icon">[R3]</span>
+        <h3>PRIVACY & TRUST</h3>
+        <p>Users may be uncomfortable submitting personal data to a third-party security tool.</p>
+      </div>
+      <div class="ch-right">
+        <div class="fix-label">// MITIGATION</div>
+        <p>Zero data retention policy. HTTPS encryption at all times. Fully transparent, open-source privacy policy published on launch.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AUDIENCE -->
+<section id="audience">
+  <div class="section-label">09 &nbsp; TARGET_USERS</div>
+  <h2>Built for <span style="color:var(--cyan2)">Everyone</span></h2>
+
+  <div class="audience-wrap">
+    <div class="aud-users">
+      <h3>INDIVIDUAL USERS</h3>
+      <div class="aud-item reveal">
+        <div class="ai-icon">[S]</div>
+        <div><h4>Students</h4><p>New internet users — high risk, low awareness</p></div>
+      </div>
+      <div class="aud-item reveal">
+        <div class="ai-icon">[J]</div>
+        <div><h4>Job Seekers</h4><p>Sharing data across job portals regularly</p></div>
+      </div>
+      <div class="aud-item reveal">
+        <div class="ai-icon">[F]</div>
+        <div><h4>Freelancers</h4><p>Accounts on dozens of platforms</p></div>
+      </div>
+      <div class="aud-item reveal">
+        <div class="ai-icon">[G]</div>
+        <div><h4>General Internet Users</h4><p>Anyone active on social media or e-commerce</p></div>
+      </div>
+    </div>
+    <div class="aud-biz">
+      <h3>BUSINESSES</h3>
+      <div class="aud-item reveal" style="border-color:rgba(177,108,255,0.3)">
+        <div class="ai-icon">[C]</div>
+        <div><h4>Small Companies</h4><p>Limited IT security budget, high exposure risk</p></div>
+      </div>
+      <div class="aud-item reveal" style="border-color:rgba(177,108,255,0.3)">
+        <div class="ai-icon">[ST]</div>
+        <div><h4>Startups</h4><p>Employee data protection and compliance</p></div>
+      </div>
+      <div class="aud-item reveal" style="border-color:rgba(177,108,255,0.3)">
+        <div class="ai-icon">[SME]</div>
+        <div><h4>SMEs</h4><p>Data governance and regulatory compliance</p></div>
+      </div>
+      <div class="aud-item reveal" style="border-color:rgba(177,108,255,0.3)">
+        <div class="ai-icon">[AG]</div>
+        <div><h4>Agencies</h4><p>Client data responsibility and trust</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="bg-glow"></div>
+  <div class="section-label" style="justify-content:center">10 &nbsp; GET_STARTED</div>
+  <h2 style="position:relative">Are You <span style="color:var(--red)">Exposed?</span></h2>
+  <p>Millions of data records are leaked every year. It takes 30 seconds to find out if yours is one of them.</p>
+  <div class="cta-actions">
+    <button class="btn-primary js-scan-trigger">RUN A FREE SCAN →</button>
+    <button class="btn-ghost">LEARN MORE</button>
+  </div>
+</section>
+
+<footer>
+  <span>OZONE WATCH // DATA EXPOSURE DETECTION SYSTEM</span>
+  <span>BUILT WITH FREE APIS — NO KEY REQUIRED</span>
+  <span>© 2025 — ALL RIGHTS RESERVED</span>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  document.querySelectorAll('button, a, .feature-card, .problem-item, .tech-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '6px'; cursor.style.height = '6px';
+      ring.style.width = '52px'; ring.style.height = '52px';
+      ring.style.borderColor = 'rgba(255,138,61,0.75)';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '10px'; cursor.style.height = '10px';
+      ring.style.width = '36px'; ring.style.height = '36px';
+      ring.style.borderColor = 'rgba(255,77,157,0.55)';
+    });
+  });
+
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => obs.observe(el));
+
+  const lines = document.querySelectorAll('#terminal .t-line, #terminal .t-blank');
+  let i = 0;
+  function showNextLine() {
+    if (i < lines.length) {
+      lines[i].classList.add('visible');
+      i++;
+      setTimeout(showNextLine, i < 4 ? 420 : 170);
+    }
+  }
+
+  const terminal = document.querySelector('.report-terminal');
+  if (terminal) {
+    const termObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { showNextLine(); termObs.disconnect(); } });
+    }, { threshold: 0.3 });
+    termObs.observe(terminal);
+  }
+
+  const rmItems = document.querySelectorAll('.rm-item');
+  const rmObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('active'); });
+  }, { threshold: 0.45 });
+  rmItems.forEach(el => rmObs.observe(el));
+
+</script>
+<script src="scanner.js"></script>
+</body>
+</html>
